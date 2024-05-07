@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <title>Money Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #191825;
+            /* Dark mode background color */
+            color: #fff;
+            /* Text color */
+            text-transform: capitalize;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        label {
+            font-size: 25px;
+            text-transform: capitalize;
+        }
+
+        label::after {
+            content: ':';
+        }
+
+        input,
+        select {
+            width: 150px;
+            height: 30px;
+            border: 1px solid black;
+            outline: none;
+            padding: 0px 7px;
+            border-radius: 6px;
+            color: black;
+            font-size: 15px;
+            /* background-color: transparent; */
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1),
+                -1px -1px 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .button {
+            border: none;
+            background-color: #488aec;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-transform: uppercase;
+            border-radius: 0.5rem;
+            user-select: none;
+            box-shadow: 0 4px 6px -1px #488aec31, 0 2px 4px -1px #488aec17;
+            transition: all 0.6s ease;
+        }
+
+        .button:hover {
+            box-shadow: 0 10px 15px -3px #488aec4f, 0 4px 6px -2px #488aec17;
+        }
+
+        .button:focus,
+        .button:active {
+            opacity: 0.85;
+            box-shadow: none;
+        }
+
+        table {
+            width: 95%;
+            border-collapse: collapse;
+            margin: 30px auto;
+            /* Added margin */
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #fff;
+            /* White border */
+        }
+
+        td.info {
+            overflow: hidden;
+            /* white-space: nowrap; */
+            text-overflow: ellipsis;
+        }
+
+        th {
+            background-color: #007bff;
+            /* Header background color */
+            color: #fff;
+            /* Header text color */
+        }
+
+        tr:nth-child(even) {
+            background-color: #333;
+            /* Even row background color */
+        }
+
+        tr:hover {
+            background-color: #555;
+            /* Hover effect */
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 400;
+            cursor: pointer;
+            text-align: center;
+            text-transform: capitalize;
+            border-radius: 5px;
+            user-select: none;
+            box-shadow: 0 4px 6px -1px #488aec31, 0 2px 4px -1px #488aec17;
+            transition: all 0.6s ease;
+        }
+
+        .button:hover {
+            box-shadow: 0 10px 15px -3px #488aec4f, 0 4px 6px -2px #488aec17;
+        }
+
+        .delete-btn:focus,
+        .delete-btn:active {
+            opacity: 0.85;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Money Tracker</h1>
+    <form action="/" method="post">
+        <div class="form">
+
+            <label for="category">Category</label>
+            <select name="category" id="category">
+                <option value="income">Income</option>
+                <option value="expenses">Expenses</option>
+            </select>
+        </div>
+        <div class="form">
+
+            <label for="amount">Amount</label>
+            <input type="number" placeholder="Enter The Amount" name="amount" id="amount">
+        </div>
+        <div class="form">
+
+            <label for="info">Info</label>
+            <input type="text" placeholder="Enter The Details" name="info" id="info">
+        </div>
+        <div class="form">
+
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date">
+        </div>
+        <div class="addbtn">
+            <input type="submit" class="button" id="addbtn" value="Add">
+        </div>
+    </form>
+
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Total</th>
+                <th>Total Income</th>
+                <th>Total Expenses</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <%= netTotal %>
+                </td>
+                <td>
+                    <%= totalIncome %>
+                </td>
+                <td>
+                    <%= totalExpenses %>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Info</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% finalData.forEach(data=> { %>
+                <tr>
+                    <td>
+                        <%= data.category %>
+                    </td>
+                    <td>
+                        <%= data.amount %>
+                    </td>
+                    <td class="info">
+                        <%= data.info %>
+                    </td>
+                    <td>
+                        <%= data.date.toDateString() %>
+                    </td>
+                    <td>
+                        <form action="/<%= data._id %>" method="get">
+                            <button class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }); %>
+        </tbody>
+    </table>
+
+
+    <script>
+        const addbtn = document.getElementById('addbtn');
+        document.getElementById('category').value = '';
+        document.getElementById('amount').value = '';
+        document.getElementById('info').value = '';
+        document.getElementById('date').value = '';
+        // addbtn.disabled = true;
+        addbtn.addEventListener('click', (e) => {
+            const category = document.getElementById('category').value;
+            const amount = document.getElementById('amount').value;
+            const info = document.getElementById('info').value;
+            const date = document.getElementById('date').value;
+
+            if (!category || !amount || !info || !date) {
+                alert('Please fill in all fields.');
+                e.preventDefault();
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>
